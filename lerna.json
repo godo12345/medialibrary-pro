@@ -1,0 +1,6 @@
+{
+  "packages": [
+    "resources/js/*"
+  ],
+  "version": "1.4.0"
+}
