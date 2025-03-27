@@ -9,7 +9,7 @@ class AttributeRule extends MediaItemRule
 {
     public string $attribute;
 
-    protected array $rules;
+    public array $rules;
 
     protected Validator $validator;
 

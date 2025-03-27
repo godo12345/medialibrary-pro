@@ -34,6 +34,7 @@ export default async function vaporUpload(
         },
         {
             withCredentials: options.withCredentials,
+            withXSRFToken: options.withCredentials,
             baseURL: options.baseURL || undefined,
             headers: options.headers || {},
             ...options.options,

@@ -2,8 +2,12 @@
 
 namespace Spatie\MediaLibraryPro\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Validation\Validator;
 use Spatie\MediaLibraryPro\Rules\GroupRules\MaxItemsRule;
 use Spatie\MediaLibraryPro\Rules\GroupRules\MaxTotalSizeInKbRule;
 use Spatie\MediaLibraryPro\Rules\GroupRules\MinItemsRule;
@@ -13,18 +17,61 @@ use Spatie\MediaLibraryPro\Rules\ItemRules\DimensionsRule;
 use Spatie\MediaLibraryPro\Rules\ItemRules\ExtensionRule;
 use Spatie\MediaLibraryPro\Rules\ItemRules\HeightBetweenRule;
 use Spatie\MediaLibraryPro\Rules\ItemRules\MaxItemSizeInKbRule;
+use Spatie\MediaLibraryPro\Rules\ItemRules\MediaItemRule;
 use Spatie\MediaLibraryPro\Rules\ItemRules\MimeTypeRule;
 use Spatie\MediaLibraryPro\Rules\ItemRules\MinItemSizeInKbRule;
 use Spatie\MediaLibraryPro\Rules\ItemRules\WidthBetweenRule;
 
-class UploadedMediaRules implements Rule
+class UploadedMediaRules implements ValidationRule, ValidatorAwareRule
 {
     public array $groupRules = [];
 
     public array $itemRules = [];
 
+    protected bool $required = false;
+
+    public bool $implicit = true;
+
+    protected Validator $validator;
+
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if (! $value && $this->required) {
+            $fail(Lang::get('validation.required'));
+
+            return;
+        }
+
+        foreach ($this->groupRules as $rule) {
+            if (! $rule->passes($attribute, $value)) {
+                $fail($rule->message());
+            }
+        }
+
+        if (is_null($value)) {
+            return;
+        }
+
+        foreach ($value as $mediaItem) {
+            foreach ($this->itemRules as $rule) {
+                $this->validateRule($rule, $attribute, $mediaItem, $fail);
+            }
+        }
+    }
+
+    public function setValidator(Validator $validator): static
+    {
+        $this->validator = $validator;
+
+        return $this;
+    }
+
     public function minItems(int $numberOfItems): self
     {
+        if ($numberOfItems > 0) {
+            $this->required = true;
+        }
+
         $this->groupRules[] = new MinItemsRule($numberOfItems);
 
         return $this;
@@ -153,13 +200,38 @@ class UploadedMediaRules implements Rule
         return $this;
     }
 
-    public function passes($attribute, $value)
+    protected function validateRule(mixed $rule, string $attribute, mixed $mediaItem, Closure $fail): void
     {
-        // this page has been left intentionally blank
+        if ($rule instanceof AttributeRule) {
+            $this->validateAttributeRule($rule, $attribute, $mediaItem, $fail);
+
+        } elseif ($rule instanceof MediaItemRule) {
+            $this->validateMediaItemRule($rule, $attribute, $mediaItem, $fail);
+
+        } else {
+            throw new \Exception('Unexpected validation rule: '.get_class($rule));
+        }
     }
 
-    public function message()
+    protected function validateAttributeRule(AttributeRule $rule, string $attribute, mixed $mediaItem, Closure $fail): void
     {
-        // this page has been left intentionally blank
+        if ($rule->passes($attribute, Arr::get($mediaItem, $rule->attribute))) {
+            return;
+        }
+
+        $this->validator->errors()->add('media.'.$mediaItem['uuid'].'.'.$rule->attribute, $rule->message());
+
+        $fail($rule->message());
+    }
+
+    protected function validateMediaItemRule(MediaItemRule $rule, string $attribute, mixed $mediaItem, Closure $fail): void
+    {
+        if ($rule->passes($attribute, $mediaItem)) {
+            return;
+        }
+
+        $this->validator->errors()->add('media.'.$mediaItem['uuid'], $rule->message());
+
+        $fail($rule->message());
     }
 }

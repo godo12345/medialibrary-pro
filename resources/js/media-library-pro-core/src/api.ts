@@ -50,7 +50,7 @@ export async function uploadFile({
                 size: file.size,
                 content_type: file.type,
             },
-            { withCredentials, headers }
+            { withCredentials, withXSRFToken: withCredentials, headers }
         );
     }
 
@@ -62,6 +62,7 @@ export async function uploadFile({
 
     return api.post(uploadDomain + '/' + routePrefix + '/uploads', formData, {
         withCredentials,
+        withXSRFToken: withCredentials,
         cancelToken: cancelTokenSource.token,
         headers: {
             'Content-Type': 'multipart/form-data',

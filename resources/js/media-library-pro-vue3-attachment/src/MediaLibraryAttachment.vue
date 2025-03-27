@@ -155,7 +155,7 @@ export default {
         vapor: { required: false, type: Boolean },
         vaporSignedStorageUrl: { required: false, type: String },
         uploadDomain: { required: false, type: String },
-        withCredentials: { required: false, type: Boolean },
+        withCredentials: { required: false, type: Boolean, default: true },
         headers: { required: false, type: Object },
         fileTypeHelpText: { required: false, type: String },
         beforeUpload: { default: () => {}, type: Function },

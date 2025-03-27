@@ -1,6 +1,6 @@
 {
     "name": "@spatie/media-library-pro-react",
-    "version": "1.4.0",
+    "version": "1.5.3",
     "author": "Adriaan Marain <adriaan@spatie.be>",
     "homepage": "https://medialibrary.pro",
     "publishConfig": {
@@ -23,7 +23,7 @@
         "run-link": "yarn link"
     },
     "dependencies": {
-        "@spatie/media-library-pro-core": "^1.4.0",
+        "@spatie/media-library-pro-core": "^1.5.3",
         "lodash": "^4.17.21"
     },
     "peerDependencies": {

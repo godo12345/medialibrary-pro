@@ -10,10 +10,9 @@
             wire:model="media.{{ $mediaItem->uuid }}.name"
         />
     @endif
-
     @error($mediaItem->propertyErrorName('name'))
         <p class="media-library-field-error">
-               {{ $message }}
+           {{ $message }}
         </p>
     @enderror
 </div>

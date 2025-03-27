@@ -11,8 +11,7 @@ import {
     useMediaLibrary,
 } from '@spatie/media-library-pro-react';
 import * as React from 'react';
-import { ReactSortable } from 'react-sortablejs';
-import { useState } from 'react';
+import { ItemInterface, ReactSortable } from 'react-sortablejs';
 
 type Props = {
     name: string;
@@ -126,15 +125,6 @@ export default function MediaLibraryCollection({
     const dropZoneProps: any = getDropZoneProps();
     const fileInputProps: any = getFileInputProps();
 
-    const items = state.media.map((object: MediaLibrary.MediaObject) => {
-        return {
-            id: object.attributes.uuid,
-            content: object,
-        };
-    });
-
-    const [listState, setListState] = useState<Array<any>>(items);
-
     return (
         <>
             <Icons />
@@ -153,14 +143,15 @@ export default function MediaLibraryCollection({
                     <div className="media-library-items">
                         {/* @ts-ignore */}
                         <ReactSortable
-                            list={listState}
-                            setList={setListState}
-                            onEnd={(evt) => {
-                                const source = evt.from;
-
+                            list={state.media.map(
+                                (object): ItemInterface => {
+                                    return { id: object.attributes.uuid, content: object };
+                                }
+                            )}
+                            setList={(newState) => {
                                 setOrder(
-                                    Array.from(source?.children || []).map((element) => {
-                                        return element.getAttribute('data-media-library-uuid') as string;
+                                    Array.from(newState || []).map((element) => {
+                                        return element.id as string;
                                     })
                                 );
                             }}

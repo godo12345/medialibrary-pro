@@ -1,6 +1,6 @@
 {
     "name": "@spatie/media-library-pro-react-collection",
-    "version": "1.4.0",
+    "version": "1.5.4",
     "author": "Adriaan Marain <adriaan@spatie.be>",
     "homepage": "https://medialibrary.pro",
     "publishConfig": {
@@ -23,7 +23,7 @@
         "run-link": "yarn link"
     },
     "dependencies": {
-        "@spatie/media-library-pro-react": "^1.4.0",
+        "@spatie/media-library-pro-react": "^1.5.3",
         "react-sortablejs": "^6.1.4",
         "sortablejs": "^1.15.2"
     },
@@ -43,7 +43,7 @@
         "@rollup/plugin-json": "^4.1.0",
         "@rollup/plugin-node-resolve": "^9.0.0",
         "@rollup/plugin-typescript": "^6.0.0",
-        "@spatie/media-library-pro-core": "^1.4.0",
+        "@spatie/media-library-pro-core": "^1.5.3",
         "@types/react": "^16.9.38",
         "@types/sortablejs": "^1.15.7",
         "rollup": "^2.29.0",

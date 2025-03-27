@@ -148,13 +148,16 @@
 
                 const files = multiple ? e.dataTransfer.files : e.dataTransfer.files[0];
 
+                this.uploading = true;
+
                 const myArguments = ['upload', files, (uploadedFilename) => {
                     this.uploadCompletedSuccessfully();
+                    this.uploading = false;
                 }, (error) => {
                     // Error callback
-                    console.log('upload error', error);
+                    this.uploading = false;
                 }, (event) => {
-                    this.uploadProgress = event.detail.progress;
+                    this.progress = event.detail.progress;
                 }];
 
                 multiple ? _this.uploadMultiple(...myArguments) : _this.upload(...myArguments);

@@ -1,4 +1,6 @@
-@php($listErrorMessage = $this->determineListErrorMessage($errors))
+@if($errors->any())
+    @php($listErrorMessage = $this->determineListErrorMessage($errors))
+@endif
 
 <div class="livewire-list-error {{ empty($listErrorMessage) ? 'media-library-hidden' : 'media-library-listerrors' }}">
     <ul>

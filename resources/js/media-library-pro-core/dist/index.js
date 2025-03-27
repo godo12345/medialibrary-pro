@@ -6564,6 +6564,7 @@ async function vaporUpload(file, options = { signedStorageUrl: '/vapor/signed-st
         visibility: options.visibility || '',
     }, {
         withCredentials: options.withCredentials,
+        withXSRFToken: options.withCredentials,
         baseURL: options.baseURL || undefined,
         headers: options.headers || {},
         ...options.options,
@@ -6601,7 +6602,7 @@ async function uploadFile({ routePrefix, file, uuid, cancelTokenSource, vapor, v
             name: file.name,
             size: file.size,
             content_type: file.type,
-        }, { withCredentials, headers });
+        }, { withCredentials, withXSRFToken: withCredentials, headers });
     }
     const formData = new FormData();
     formData.append('file', file);
@@ -6609,6 +6610,7 @@ async function uploadFile({ routePrefix, file, uuid, cancelTokenSource, vapor, v
     formData.append('uuid', uuid);
     return api.post(uploadDomain + '/' + routePrefix + '/uploads', formData, {
         withCredentials,
+        withXSRFToken: withCredentials,
         cancelToken: cancelTokenSource.token,
         headers: {
             'Content-Type': 'multipart/form-data',
